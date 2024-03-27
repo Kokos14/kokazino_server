@@ -5,6 +5,9 @@ import sys
 import os
 import psycopg2
 
+import asyncio
+import websockets
+
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
@@ -26,6 +29,30 @@ with conn.cursor() as cur:
     print(res)
 
 #os.system('pause')
+
+# Функция, которая будет вызываться при подключении клиента
+async def hello(websocket, path):
+    # Отправляем сообщение при подключении
+    await websocket.send("Добро пожаловать! Вы подключены к WebSocket серверу.")
+
+    try:
+        while True:
+            # Получаем сообщение от клиента
+            message = await websocket.recv()
+            print(f"Получено сообщение от клиента: {message}")
+
+            # Отправляем обратно полученное сообщение
+            await websocket.send(f"Вы сказали: {message}")
+    except websockets.exceptions.ConnectionClosedOK:
+        print("Соединение с клиентом закрыто.")
+
+# Запуск WebSocket сервера на localhost:8765
+start_server = websockets.serve(hello, "localhost", 8765)
+
+# Запускаем сервер в асинхронном режиме
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()
+
 
 TOKEN = "6809197177:AAH0EAFMSxe_Im9d_BtA4Wg3IzFFdr-F6Dk"
 
