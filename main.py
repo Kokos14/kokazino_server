@@ -40,6 +40,7 @@ def get_ip_address():
 ipp = get_ip_address()
 print("IP-адрес вашего компьютера:", ipp)
 
+'''
 DATABASE_URL = "postgresql://kokoz:jYL0n5iYiuHGR4Vl4TUe9g@tg-test-9200.7tc.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -48,7 +49,7 @@ with conn.cursor() as cur:
     cur.execute("SELECT * FROM tg")
     res = cur.fetchall()
     conn.commit()
-    print(res)
+    print(res)'''
 
 
 async def hello(websocket, path):
