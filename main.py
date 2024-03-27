@@ -19,6 +19,10 @@ from aiogram.types.web_app_info import WebAppInfo
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+import asyncio
+from aiohttp import web
+
+
 
 import requests
 
@@ -51,28 +55,33 @@ with conn.cursor() as cur:
     print(res)
 
 
-async def hello(websocket, path):
-    # Принимаем подключение
+async def hello(request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
     print("Подключение установлено")
 
-    try:
-        # Получаем сообщения от клиента
-        async for message in websocket:
-            print(f"Получено сообщение от клиента: {message}")
+    async for msg in ws:
+        if msg.type == web.WSMsgType.TEXT:
+            print(f"Получено сообщение от клиента: {msg.data}")
+            await ws.send_str(f"Вы сказали: {msg.data}")
+            print(f"Отправлено сообщение клиенту: {msg.data}")
+        elif msg.type == web.WSMsgType.ERROR:
+            print("Ошибка соединения: %s" % ws.exception())
 
-            # Отправляем ответ клиенту
-            await websocket.send(f"Вы сказали: {message}")
-            print(f"Отправлено сообщение клиенту: {message}")
+    print("Соединение с клиентом закрыто")
+    return ws
 
-    except websockets.exceptions.ConnectionClosedOK:
-        print("Соединение с клиентом закрыто")
+app = web.Application()
+app.add_routes([web.get('/', hello)])
 
+# Создаем и запускаем сервер в асинхронном цикле
+async def start_server():
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, str(ipp), 7865)
+    await site.start()
 
-ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-start_server = websockets.serve(hello, str(ipp), 7865) #ssl=ssl_context
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+asyncio.run(start_server())
 
 print("SERVER WORK")
 
