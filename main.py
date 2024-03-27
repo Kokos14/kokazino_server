@@ -24,7 +24,7 @@ import requests
 
 def get_ip_address():
     try:
-        response = requests.get("http://httpbin.org/ip")
+        response = requests.get("https://www.ripe.net/@@ipaddress")
         if response.status_code == 200:
             ip_address = response.json()["origin"]
             return ip_address
