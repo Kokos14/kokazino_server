@@ -48,7 +48,7 @@ async def hello(websocket, path):
 
 print("SERVER START")
 # Запуск WebSocket сервера на localhost:8765
-start_server = websockets.serve(hello, "kok1-production.up.railway.app", 8765)
+start_server = websockets.serve(hello, "kok1.railway.internal", 8765)
 
 print("SERVER CONNECT")
 
