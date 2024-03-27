@@ -24,7 +24,7 @@ import requests
 
 def get_ip_address():
     try:
-        response = requests.get("https://www.ripe.net/@@ipaddress")
+        response = requests.get("http://httpbin.org/ip")
         if response.status_code == 200:
             ip_address = response.json()["origin"]
             return ip_address
@@ -36,7 +36,9 @@ def get_ip_address():
         return None
 
 # Получаем и выводим IP-адрес
-print("IP-адрес вашего компьютера:", get_ip_address())
+
+ipp = get_ip_address()
+print("IP-адрес вашего компьютера:", ipp)
 
 DATABASE_URL = "postgresql://kokoz:jYL0n5iYiuHGR4Vl4TUe9g@tg-test-9200.7tc.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
 
@@ -67,7 +69,7 @@ async def hello(websocket, path):
 
 
 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-start_server = websockets.serve(hello, "0.0.0.0", 7865) #ssl=ssl_context
+start_server = websockets.serve(hello, str(ipp), 7865) #ssl=ssl_context
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
