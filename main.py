@@ -46,12 +46,17 @@ async def hello(websocket, path):
     except websockets.exceptions.ConnectionClosedOK:
         print("Соединение с клиентом закрыто.")
 
+print("SERVER START")
 # Запуск WebSocket сервера на localhost:8765
-start_server = websockets.serve(hello, "localhost", 8765)
+start_server = websockets.serve(hello, "kokos14.github.io/kok1", 8765)
+
+print("SERVER CONNECT")
 
 # Запускаем сервер в асинхронном режиме
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
+
+print("SERVER WORK")
 
 
 TOKEN = "6809197177:AAH0EAFMSxe_Im9d_BtA4Wg3IzFFdr-F6Dk"
