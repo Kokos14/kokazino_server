@@ -19,6 +19,25 @@ from aiogram.types.web_app_info import WebAppInfo
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+
+import requests
+
+def get_ip_address():
+    try:
+        response = requests.get("http://httpbin.org/ip")
+        if response.status_code == 200:
+            ip_address = response.json()["origin"]
+            return ip_address
+        else:
+            print("Ошибка при получении IP-адреса:", response.status_code)
+            return None
+    except Exception as e:
+        print("Ошибка при запросе к httpbin.org:", e)
+        return None
+
+# Получаем и выводим IP-адрес
+print("IP-адрес вашего компьютера:", get_ip_address())
+
 DATABASE_URL = "postgresql://kokoz:jYL0n5iYiuHGR4Vl4TUe9g@tg-test-9200.7tc.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
