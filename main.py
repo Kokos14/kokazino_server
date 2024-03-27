@@ -67,7 +67,7 @@ async def hello(websocket, path):
 
 
 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-start_server = websockets.serve(hello, "kokazinoserver-production.up.railway.app", 7865) #ssl=ssl_context
+start_server = websockets.serve(hello, "0.0.0.0", 7865) #ssl=ssl_context
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
