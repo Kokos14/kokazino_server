@@ -25,7 +25,7 @@ with conn.cursor() as cur:
     conn.commit()
     print(res)
 
-os.system('pause')
+#os.system('pause')
 
 TOKEN = "6809197177:AAH0EAFMSxe_Im9d_BtA4Wg3IzFFdr-F6Dk"
 
