@@ -4,6 +4,7 @@ import sys
 
 import os
 import psycopg2
+import ssl
 
 import asyncio
 import websockets
@@ -28,31 +29,27 @@ with conn.cursor() as cur:
     conn.commit()
     print(res)
 
-#os.system('pause')
 
-# Функция, которая будет вызываться при подключении клиента
 async def hello(websocket, path):
-    # Отправляем сообщение при подключении
-    await websocket.send("Добро пожаловать! Вы подключены к WebSocket серверу.")
+    # Принимаем подключение
+    print("Подключение установлено")
 
     try:
-        while True:
-            # Получаем сообщение от клиента
-            message = await websocket.recv()
+        # Получаем сообщения от клиента
+        async for message in websocket:
             print(f"Получено сообщение от клиента: {message}")
 
-            # Отправляем обратно полученное сообщение
+            # Отправляем ответ клиенту
             await websocket.send(f"Вы сказали: {message}")
+            print(f"Отправлено сообщение клиенту: {message}")
+
     except websockets.exceptions.ConnectionClosedOK:
-        print("Соединение с клиентом закрыто.")
+        print("Соединение с клиентом закрыто")
 
-print("SERVER START")
-# Запуск WebSocket сервера на localhost:8765
-start_server = websockets.serve(hello, "0.0.0.0", 8765)
 
-print("SERVER CONNECT")
+ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+start_server = websockets.serve(hello, "0.0.0.0", 3000, ssl=ssl_context)
 
-# Запускаем сервер в асинхронном режиме
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
 
